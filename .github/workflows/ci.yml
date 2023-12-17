@@ -1,0 +1,24 @@
+# This workflow tests feature branches and PRs
+
+name: ci
+on:
+  push:
+    branches-ignore:
+      - master
+      - beta
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: build
+
+      - name: Install snap
+        run: sudo snap install --dangerous ${{ steps.build.outputs.snap }}
+
+      - name: Test snap
+        run: zotero-snap --version
